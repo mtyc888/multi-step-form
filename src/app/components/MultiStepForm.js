@@ -14,11 +14,15 @@ export default function MultiStepForm() {
         booking: null,
         resource: null
     });
-    //load the step from local storage when user reloads the page
+    //load the step and formData from local storage when user reloads the page
     useEffect(() => {
         const savedStep = localStorage.getItem("currentStep");
+        const savedFormData = localStorage.getItem("formData");
         if(savedStep){
             setStep(parseInt(savedStep, 10));
+        }
+        if(savedFormData){
+            setFormData(JSON.parse(savedFormData));
         }
         //after finish fetching, set this to false
         setLoading(false);
@@ -30,8 +34,16 @@ export default function MultiStepForm() {
             localStorage.setItem("currentStep", step);
         }
     }, [step, loading]);
+    //save the form data to local storage whenever it changes
+    useEffect(() =>{
+        if(!loading){
+            localStorage.setItem("formData", JSON.stringify(formData));
+        }
+    }, [formData, loading]);
+
     const nextStep = () => setStep((prev) => prev + 1);
     const prevStep = () => setStep((prev) => prev - 1);
+    
     const handleDataChange = (field, value) => {
         setFormData({ ...formData, [field]:value})
     }
